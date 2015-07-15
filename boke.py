@@ -3,33 +3,36 @@ import cv2
 import numpy as np
 
 # you need this image file
-im = cv2.imread("test.jpg", 0)
+im_ori = cv2.imread("src.jpg", 0)
+im = np.int16(im_ori)
 
 cv2.imwrite("src.jpg", im)
 
 # x-edge filter
-kernelx = np.array([[0, 0, 0],
-                    [1, 0, -1],
-                    [0, 0, 0]])
-edgex = cv2.filter2D(im, -1, kernelx)
+kernelx = np.array([[1, 0, -1]])
 
 # y-edge filter
-kernely = np.array([[0, 1, 0],
-                    [0, 0, 0],
-                    [0, -1, 0]])
+kernely = np.array([[1],
+                    [0],
+                    [-1]])
+
+edgex = cv2.filter2D(im, -1, kernelx)
 edgey = cv2.filter2D(im, -1, kernely)
 
-cv2.imwrite("edgex.jpg", edgex)
-cv2.imwrite("edgey.jpg", edgey)
+print edgex.dtype
+print edgex[6,44]
+absx = abs(edgex)
+absy = abs(edgey)
+print absx[6,44]
 
-edgeX = abs(edgex)
-edgeY = abs(edgey)
+cv2.imwrite("edgex.jpg", absx)
+cv2.imwrite("edgey.jpg", absy)
 
 # convert to calcHist supported type
-uint16_x = np.uint16(edgeX)
-uint16_y = np.uint16(edgeY)
+uint16_x = np.uint16(absx)
+uint16_y = np.uint16(absy)
 
-# make histgram
+# make edge strength histgram
 hist = cv2.calcHist([uint16_x, uint16_y],[0],None,[512],[0,512])
 
 f = open("hist.txt", "w")
@@ -45,8 +48,8 @@ fil = np.array([[-2, 1, -2],
 f = cv2.filter2D(im, -1, fil)
 
 # several weight of filterd values
-for omega in [0, 5, 10, 15, 20, 100]:
-    out = 0.1*f*omega + im
-    outfile = "out" + str(omega) + ".jpg"
+for weight in [0, 5, 10, 15, 20, 100]:
+    out = 0.1*f*weight + im
+    outfile = "out" + str(weight) + ".jpg"
     cv2.imwrite(outfile,out)
 
