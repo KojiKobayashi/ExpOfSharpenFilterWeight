@@ -19,11 +19,8 @@ kernely = np.array([[1],
 edgex = cv2.filter2D(im, -1, kernelx)
 edgey = cv2.filter2D(im, -1, kernely)
 
-print edgex.dtype
-print edgex[6,44]
 absx = abs(edgex)
 absy = abs(edgey)
-print absx[6,44]
 
 cv2.imwrite("edgex.jpg", absx)
 cv2.imwrite("edgey.jpg", absy)
