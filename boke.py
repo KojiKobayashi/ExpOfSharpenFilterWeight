@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 # you need this image file
-im_ori = cv2.imread("src.jpg", 0)
+im_ori = cv2.imread("input.jpg", 0)
 im = np.int16(im_ori)
 
 cv2.imwrite("src.jpg", im)
